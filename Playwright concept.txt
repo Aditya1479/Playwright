@@ -12,6 +12,7 @@
 npx playwright test --headed
 npx playwright test
 npx playwright show-report : To open last HTML report run:
+npx playwright test --ui  opens the playwright runner.
 
 #Methods:
     browser.newContext()
@@ -30,6 +31,13 @@ npx playwright show-report : To open last HTML report run:
     page.locator('#terms').uncheck()
     const page2=context.waitForEvent('page')
     await page.locator("#username").inputValue()); //provides input value which is dynamically provided
+    page.locator("h3:has-text=('ZARA COAT 3')").isVisible()
+    page.locator("[placeholder='Select Country']").pressSequentially("ind") //enters the input sequentially means not copy pasting actual writing
+    page.getByLabel("Employed").click() //mostly used and stable for checkbox and radio button.
+    page.getByLabel("Gender").selectOption("Male") //only used for dropdown.
+    page.getByPlaceholder("Password").fill("234") //identified by Placeholder attribute from DOM
+    page.getByRole("button",{name:'submit'})
+    page.locator("app-card").filter({hasText: 'Nokia Edge'}).getByRole("button",{name:'Add'}).click()
 
 #Assertion:
     expect(page.locator("")).toContainText("")
