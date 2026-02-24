@@ -1,6 +1,6 @@
 const test= require('@playwright/test');
 const {expect} = require("@playwright/test");
-test.only("Rahul Shetty Login", async ({page})=> {
+test("Rahul Shetty Login", async ({page})=> {
     await page.goto("https://rahulshettyacademy.com/client/")
     const ordersBtn='ul [routerlink*=myorders]';
     const email='Aditya123@gmail.com';

@@ -13,6 +13,7 @@ npx playwright test --headed
 npx playwright test
 npx playwright show-report : To open last HTML report run:
 npx playwright test --ui  opens the playwright runner.
+npx playwright codegen => Playwright codegen (mostly used in standAlone scripts)
 
 #Methods:
     browser.newContext()
@@ -50,7 +51,7 @@ In Playwright CSS and XPATH selectors are supported.
 
 await  expect(page.locator('#usertype').last()).toBeChecked()
 expect( await page.locator('#terms').isChecked()).toBeFalsy()
-In above to assertion there is difference of wait where, In first assertion await is provided outside the expect() coz
+In above two assertion there is difference of wait where, In first assertion await is provided outside the expect() coz
 in that toBeChecked() action is performed outside the expect block AND in second assertion
 isChecked() action is written is expect block so await is provided inside it
 
