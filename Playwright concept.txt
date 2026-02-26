@@ -39,6 +39,8 @@ npx playwright codegen => Playwright codegen (mostly used in standAlone scripts)
     page.getByPlaceholder("Password").fill("234") //identified by Placeholder attribute from DOM
     page.getByRole("button",{name:'submit'})
     page.locator("app-card").filter({hasText: 'Nokia Edge'}).getByRole("button",{name:'Add'}).click()
+    await page.locator("#mousehover").hover()
+    const framePage= page.frameLocator("#courses-iframe") //Interact with iframe
 
 #Assertion:
     expect(page.locator("")).toContainText("")
@@ -48,6 +50,10 @@ npx playwright codegen => Playwright codegen (mostly used in standAlone scripts)
 
 #Concept:
 In Playwright CSS and XPATH selectors are supported.
+trace: 'retain-on-failure' =>trace will created for failure tests.
+ *****Alert Handling***
+ page.on('dialog',dialog => dialog.accept())
+     await page.locator("#confirmbtn").click()
 
 await  expect(page.locator('#usertype').last()).toBeChecked()
 expect( await page.locator('#terms').isChecked()).toBeFalsy()
