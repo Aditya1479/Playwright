@@ -1,6 +1,10 @@
-const { apiUtils } = require('./utils/apiUtils')
+const { apiUtils } = require('../utils/apiUtils')
 const { test, expect, request } = require("@playwright/test")
-
+const {json} = require("node:stream/consumers");
+const fakePayLoadOrders={
+    data:[],
+    message:"No Product in Cart"
+}
 const loginPayload = {
     userEmail: "Aditya123@gmail.com",
     userPassword: "Aditya@3098"
@@ -33,26 +37,23 @@ test("Api Test Cases", async ({ page }) => {
 
     await page.goto("https://rahulshettyacademy.com/client/");
 
+    await page.route("https://rahulshettyacademy.com/api/ecom/order/get-orders-for-customer/698475bcc941646b7ad6cef5",
+        async route =>{
+            //Intercepting the API- response>{Plawright->FakeResponse} browser>render the data in frontend
+            const response= await page.request.fetch(route.request())
+            //(page.request it is API testing Helper will go into API mode and fetch(route.request()) will fetch the response
+
+            let body= JSON.stringify(fakePayLoadOrders);
+            //converted JS object in JSON using JSON method.
+           await route.fulfill({
+                response,
+                body,
+                //In the body variable we stored our fakePayLoadOrders and it will be override.
+            })
+        })
+    await page.pause();
     await page.locator(ordersBtn).click()
-
-    await page.locator("tbody").waitFor()
-
-    const rows = page.locator("tbody tr")
-
-    for (let i = 0; i < await rows.count(); ++i) {
-
-        const rowOrderID = await rows.nth(i).locator("th").textContent()
-
-        if (response.orderID.includes(rowOrderID)) {
-
-            await rows.nth(i).locator("button").first().click()
-
-            break;
-        }
-    }
-
-    const orderIdDetails = await page.locator(".col-text").first().textContent()
-
-    expect(response.orderID.includes(orderIdDetails)).toBeTruthy()
+    console.log(await page.locator(".mt-4").textContent())
+    //await page.locator("button[routerlink*='myoders']").click()
 
 })

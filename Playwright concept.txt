@@ -18,7 +18,7 @@ npx playwright codegen => Playwright codegen (mostly used in standAlone scripts)
 #Methods:
     browser.newContext()
     context.newPage()
-    page.goto
+    page.goto()
     page.locator().fill()
     page.locator().click()
     page.locator().textContent()
@@ -41,6 +41,15 @@ npx playwright codegen => Playwright codegen (mostly used in standAlone scripts)
     page.locator("app-card").filter({hasText: 'Nokia Edge'}).getByRole("button",{name:'Add'}).click()
     await page.locator("#mousehover").hover()
     const framePage= page.frameLocator("#courses-iframe") //Interact with iframe
+    storageState() sets the all browser storage
+    page.route() is used to intercept and control network requests
+    route.fulfill() → return mocked response
+    route.abort() is used inside a page.route() or context.route() handler to cancel a network request before it is sent or completed.
+    page.route('**/*,{jpg,png,jpeg}',route => route.abort())
+    page.on('request',request=>console.log(request.url()));
+    page.on('response', response=>console.log(response.url(), response.status()));
+    await page.screenshot({path:"screenshot.png"}); will capture screenshot of complete web Page
+    await page.locator("#displayed-text").screenshot({path:"partialScreenshot.png"}); it will capture screenshot of respective element only.
 
 #Assertion:
     expect(page.locator("")).toContainText("")
@@ -52,7 +61,8 @@ npx playwright codegen => Playwright codegen (mostly used in standAlone scripts)
 In Playwright CSS and XPATH selectors are supported.
 trace: 'retain-on-failure' =>trace will created for failure tests.
  *****Alert Handling***
- page.on('dialog',dialog => dialog.accept())
+ page.on('dialog',dialog => dia
+ log.accept())
      await page.locator("#confirmbtn").click()
 
 await  expect(page.locator('#usertype').last()).toBeChecked()
@@ -60,6 +70,25 @@ expect( await page.locator('#terms').isChecked()).toBeFalsy()
 In above two assertion there is difference of wait where, In first assertion await is provided outside the expect() coz
 in that toBeChecked() action is performed outside the expect block AND in second assertion
 isChecked() action is written is expect block so await is provided inside it
+
+beforeEach: it will execute before every test block.
+beforeAll: it will execute once only before all the test block.
+
+**************API Testing****************
+request library is used for API testing
+ const apiContext= await request.newContext();
+    const loginResponse= await apiContext.post("https://rahulshettyacademy.com/api/ecom/auth/login",
+        {
+            data:loginPayload
+
+        } )//200,201,202
+    expect(loginResponse.ok()).toBeTruthy()
+    const loginReponseJson= loginResponse.json()
+    const token= loginReponseJson.token;
+--You can not debug the API part using playwright console.
+-In Playwright you can modify the API or stop the API before executions.
+
+**************Read and write the into excel using pure JavaScript******
 
 #CSS Selector:
 IF ID is present
@@ -76,3 +105,88 @@ css -> parentTagName >> childTagName
 
 If needs to write the css selector based on text
 text=''
+
+======================Playwright Framework=============================
+
+=>Implement Page object Pattern for Web Automation tests
+=>Create API Utilities for Data setup and clean up.
+=>How to drive test data from external files for Playwright tests
+=>How to Parameterize the tests with different data sets in Playwright
+=>Create Project Configurations with Playwright Config file
+=>Test Retry feature in Playwright and how it works
+=>How to record the video of test execution within Playwright framework
+=>Understand how tests run in parallel mode in Playwright Framework
+=>Test Annotations on run, skip, serial run & Parallel run
+=>Playwright Command Line Arguments options to run tests
+=>Detailed view of HTML Reporting with Trace viewer logs
+=>Generating Allure reporting for Playwright execution results
+=>How to create custom Scripts in package.json to trigger tests
+=>Integrate the Playwright framework with Jenkins CI/CD Jobs and Schedule run
+
+======================Playwright Framework Design============================
+1.Create a classes respective to Pages(loginPage,DashBoardPage,OrderPage).
+2. Create constructor with page as argument and call it like=> this.page=page.
+3. write locators in constructor eg. this.signInButton= page.locator('#login');
+4.create a methods to perform action
+ async goTo(page){
+        await page.goto("https://rahulshettyacademy.com/client/")
+    }
+5.export that class => module.exports={LoginPage};
+6.create a POM manager file and create a class where constructor will have the object of
+=> this.page=page
+also will call the page layers like =>
+=> this.loginPage = new LoginPage(page);
+and create a methods to return the pages in it
+ => getLoginPage() {
+       return this.loginPage
+    }
+7.import the POManager in test file like =>const {POManager}= require("../pageObjects/POManager")
+8.create object once and resued to call other pages and page can call their methods =->
+const poManager =new POManager(page)
+
+ const loginPage=poManager.getLoginPage();
+ await loginPage.goTo(page);
+
+ const dashboardPage= poManager.getDashboardPage()
+ await dashboardPage.searchProductAddCart(productName)
+9. To create a test data file create it in utils folder and provide it in jSON format
+10.To use this JSON in test you need convert this json to first string and then to Javascript object
+json>string>js object
+const dataset= JSON.parse(JSON.stringify(require("../utils/placeOrderTestData.json")));
+
+11. To run the script for number of datas
+create array of json in utils folder like
+[{
+ "username" : "Aditya123@gmail.com",
+  "password": "Aditya@3098",
+  "productName" :"ZARA COAT 3",
+  "url": "https://rahulshettyacademy.com/client"
+},
+  {
+    "username" : "akunjir98@gmail.com",
+    "password": "Sdet@3098",
+    "productName" :"ADIDAS ORIGINAL",
+    "url": "https://rahulshettyacademy.com/client"
+  }
+]
+and the use a for loop to run the script for different datasets
+and this in testscript file for(const data of dataset) {test ()}
+
+12.How to pass test data as fixture by extend test annotation behaviour
+    12.1 create one file in utils which reads the test data
+           const base = require("@playwright/test");
+
+           exports.CustomeTest = base.extend({
+           //CustomeTest will be exported and can be used in script file
+               testDataOrder: {
+                   username: "Aditya123@gmail.com",
+                   password: "Aditya@3098",
+                   productName: "ZARA COAT 3",
+                   url: "https://rahulshettyacademy.com/client"
+               },
+           });
+     12.2 add this in your script file=> const { CustomeTest} = require("../utils/test-base");
+     and instead of
+     test(" Client App login ", async ({page}) => {}
+     use => CustomeTest(" Client App login ", async ({page,testDataOrder}) => {}
+     12.3 replace the arguments and use it with testDataOrder.userName etc..

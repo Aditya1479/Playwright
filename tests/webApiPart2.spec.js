@@ -15,7 +15,7 @@ test.beforeAll(async ({browser})=>{
     browserContext =await browser.newContext({storageState:'state.json'})
 })
 
-test.only("Rahul Shetty Login", async ()=> {
+test("Rahul Shetty Login", async ()=> {
 
 
     const ordersBtn='ul [routerlink*=myorders]';
