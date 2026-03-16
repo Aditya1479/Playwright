@@ -23,5 +23,5 @@ test("Calendar Validations", async ({ page }) => {
     await expect(page.locator("[name='date']"))
         .toHaveValue(`${year}-${monthNumber}-${date}`);
 
-    await page.pause();
+
 });

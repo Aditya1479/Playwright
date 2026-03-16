@@ -1,0 +1,4 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","5605","@Web Upload download excel validation","chromium","2026-03-13","passed","2026-03-13","","uploadDownload.spec.js","",""
+"","13776","@Web Client App login ADIDAS ORIGINAL","chromium","2026-03-13","passed","2026-03-13","","loginRegistePOM.spec.js","",""
+"","14304","@Web Client App login ZARA COAT 3","chromium","2026-03-13","passed","2026-03-13","","loginRegistePOM.spec.js","",""

@@ -51,7 +51,7 @@ test("Api Test Cases", async ({ page }) => {
                 //In the body variable we stored our fakePayLoadOrders and it will be override.
             })
         })
-    await page.pause();
+
     await page.locator(ordersBtn).click()
     console.log(await page.locator(".mt-4").textContent())
     //await page.locator("button[routerlink*='myoders']").click()

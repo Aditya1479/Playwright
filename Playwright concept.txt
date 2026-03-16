@@ -1,4 +1,4 @@
-#Feature:
+#Features:
     AutoWait for action
     Cross browser platform
     Multiplatform support
@@ -8,31 +8,32 @@
     window it restores at their)
 #SETUP
     1.npm init playwright(Creates default playwright automation structure)
+    2.npm init playwright@latest
 #commands:
-npx playwright test --headed
+npx playwright test --headed //test will run in foreground(browser will open).
 npx playwright test
 npx playwright show-report : To open last HTML report run:
-npx playwright test --ui  opens the playwright runner.
+npx playwright test --ui => opens the playwright runner.
 npx playwright codegen => Playwright codegen (mostly used in standAlone scripts)
 
 #Methods:
-    browser.newContext()
+    browser.newContext() /fresh context browser will open.
     context.newPage()
-    page.goto()
-    page.locator().fill()
-    page.locator().click()
-    page.locator().textContent()
-    page.title()
+    page.goto() //to launch the URL
+    page.locator().fill() //
+    page.locator().click() //used to click on locator
+    page.locator().textContent() //retrieve the text of locator
+    page.title() //retrieve the page title
     page.locator("").first() //provide first element from array
     page.locator("").nth(n) //provide n th element from array
     allTextContents() /provide list of elements present in array. DO NOT PROVIDE AUTO WAIT SO NEED HANDLE THAT IN SCRIPT
-    page.locator().toBeVisible() assertion
+    page.locator().toBeVisible() //checks the visibility of locator assertion
     page.waitForLoadState('networkidle') it will wait till network at its idle state to fetch the Api Responses
     await page.pause() //opens the playwright console for debugging and pause the scripts
-    page.locator('#terms').uncheck()
-    const page2=context.waitForEvent('page')
+    page.locator('#terms').uncheck() //uncheck the locator
+    const page2=context.waitForEvent('page') //Handled the new window
     await page.locator("#username").inputValue()); //provides input value which is dynamically provided
-    page.locator("h3:has-text=('ZARA COAT 3')").isVisible()
+    page.locator("h3:has-text=('ZARA COAT 3')").isVisible() //Returns whether the element is visible.
     page.locator("[placeholder='Select Country']").pressSequentially("ind") //enters the input sequentially means not copy pasting actual writing
     page.getByLabel("Employed").click() //mostly used and stable for checkbox and radio button.
     page.getByLabel("Gender").selectOption("Male") //only used for dropdown.
@@ -41,7 +42,7 @@ npx playwright codegen => Playwright codegen (mostly used in standAlone scripts)
     page.locator("app-card").filter({hasText: 'Nokia Edge'}).getByRole("button",{name:'Add'}).click()
     await page.locator("#mousehover").hover()
     const framePage= page.frameLocator("#courses-iframe") //Interact with iframe
-    storageState() sets the all browser storage
+    storageState() //Returns storage state for this request context, contains current cookies and local storage snapshot if it was passed to the constructor.
     page.route() is used to intercept and control network requests
     route.fulfill() → return mocked response
     route.abort() is used inside a page.route() or context.route() handler to cancel a network request before it is sent or completed.
@@ -90,7 +91,7 @@ request library is used for API testing
 
 **************Read and write the into excel using pure JavaScript******
 
-#CSS Selector:
+======================================#CSS Selector#==================================================
 IF ID is present
 css -> #id OR tagName#id
 
@@ -190,3 +191,688 @@ and this in testscript file for(const data of dataset) {test ()}
      test(" Client App login ", async ({page}) => {}
      use => CustomeTest(" Client App login ", async ({page,testDataOrder}) => {}
      12.3 replace the arguments and use it with testDataOrder.userName etc..
+
+     ====================================================================================================
+     How to Run test in parallel from same spec files
+     =->test.describe.configure({mode:"parallel"})
+     ===================================================================================================
+     how to tag tests and control the execution from command line parameters
+     write down @Web inside test block
+        npx playwright test --grep "@Web"
+     ====================================================================================================
+     How to install Allure Reporting
+     npm i -D @playwright/test allure-playwright
+     npx playwright test --grep @Web --reporter=line,allure-playwright
+     ==allure results folder is created
+     allure generate ./allure-results --clean // this command will generate the allure reports in readable format
+     allure open ./allure-report  //this command will open allure reports in browser.
+     ===========================Jenkins=================================================================
+     download jenkins war file and execute following command
+     java jar --jenkins.war
+     this command will give one key copy that and open browser in localhost:8080 and paste the copied key
+     click on create new provide name and select freestyle project
+     provide the project path
+     provide the script command also you can run it as parameterized
+     so your job is created now click on build project with parameter.
+
+     ===============================Cucumber======================================================
+     1.Feature file setup
+
+
+=========================================FRAMEWORK EXPLAINATION=========================================
+
+In my project we implemented a modular Playwright framework using a layered architecture
+consisting of Tests, Tasks, Questions, Page Objects, and Utilities.
+
+Tests describe business scenarios, tasks implement reusable user actions, questions handle assertions,
+and page objects centralize UI locators.
+
+This separation improves maintainability, reusability, and scalability.
+
+Additionally, our framework supports API + UI validation, where backend responses are validated
+along with UI behavior to ensure data consistency.
+======================================================================================================
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++
+import { test } from '@playwright/test';
+import {smartuxStudioAssertion} from '../src/questions/studioQuestions';
+import * as URL from '../src/utils/url.util';
+import * as commonTasks from "../src/tasks/commonTasks";
+import {CORE_STUDIO_OBJECTS} from "../src/pageObjects/studioObjects";
+import * as leftPaneTasks from "../src/tasks/leftPane";
+import {
+    openActionsPane,
+    openFunctionsPaneVerifyControls,
+    openPropertieGroupPane,
+    openWidgetsGroupSubPane,
+    openWidgetsSubPane
+} from "../src/tasks/leftPane";
+
+
+test.beforeEach(async ({ page }) => {
+    await page.goto(URL.getSmartUXUrl());
+});
+
+test('Verify that after opening the smartux studio all landing menus and panes are visible', async ({ page }) => {
+    //In Playwright frameworks:
+    // page must always travel from test → to task/assertion method, It never auto-exists outside the test block..
+    await smartuxStudioAssertion.isLandingPageManusLoaded(page);
+});
+
+test("verify that after opening component pane visibility of the Controls Component tab, Component heading, Component operations panel, Add Route, Add Component, and Refresh icon", async ({page}) => {
+    await commonTasks.clickOnElement(page,CORE_STUDIO_OBJECTS.componentPane);
+    await smartuxStudioAssertion.isComponentMenusVisible(page);
+});
+
+test("Verify the component list after clicking on refresh button,successful backend API call used to fetch the component list.", async ({page}) => {
+    await leftPaneTasks.verifyTheComponentList(page)
+});
+
+test("Verify the Behavior after opening the component operations panel controls present on it along with the successful backend API call used to fetch the component list. ", async ({page}) => {
+    await leftPaneTasks.verifyTheComponentTree(page);
+});
+
+test("Verify the visibility of controls for Add Component Option", async ({page}) => {
+    await leftPaneTasks.verifyAddComponent(page);
+});
+
+test.only("Verify the behavior of widget management", async({page}) => {
+    await leftPaneTasks.openWidgetPaneVerifyControls(page);
+    await leftPaneTasks.openWidgetsSubPane(page);
+    await leftPaneTasks.openWidgetsGroupSubPane(page);
+    await leftPaneTasks.openPropertiesPane(page);
+    await leftPaneTasks.openPropertieGroupPane(page);
+    await leftPaneTasks.openFunctionsPaneVerifyControls(page);
+    await leftPaneTasks.openActionsPane(page);
+
+}) const fs = require('fs');
+const env = require('../../../config/env.json');
+
+function getSmartUXUrl() {
+    const originalUrl = fs.readFileSync(env.urlFile, 'utf8').trim();
+    const match = originalUrl.match(/localhost:(\d+)/);
+
+    if (!match) {
+        throw new Error('Port number not found in URL');
+    }
+
+    const port = match[1];
+    return `http://localhost:${port}/#!/openApp?inputPath=${env.smartuxInputPath}`;
+}
+
+module.exports = { getSmartUXUrl };  import { LEFT_PANE_OBJECTS ,WIDGETS_MANAGEMENT_APP} from '../pageObjects/leftPaneObjects';
+import {CORE_STUDIO_OBJECTS} from "../pageObjects/studioObjects";
+import * as UI_Actions from '../tasks/uiActions';
+import * as commonTasks from "../tasks/commonTasks"
+import {request,expect} from "@playwright/test";
+import env from "../../../config/env.json";
+import fs from "fs";
+import * as leftPaneQuestions from "../questions/leftPaneQuestions"
+import {
+    clickOnElementBygetByText,
+    clickOnElementBygetByTitle,
+    clickOnElementByLocatorgetByText
+} from "../tasks/commonTasks";
+import {widgetGroupLoaded, widgetPaneLoaded} from "../questions/leftPaneQuestions";
+import * as commonQuestions from "../questions/commonQuestions";
+
+const TARGET_SCREEN_NAMES = loadTargetScreenNames();
+export async function openComponentInCanvas(page, componentName, formName) {
+    if (!page) {
+        throw new Error('Playwright page instance is required');
+    }
+
+    if (!componentName || !formName) {
+        throw new Error('componentName and formName are required');
+    }
+        await UI_Actions.clickByText(page, LEFT_PANE_OBJECTS.magicNode);
+        await UI_Actions.clickByText(page, LEFT_PANE_OBJECTS.magicGenLibModule);
+        await UI_Actions.clickByText(page, componentName);
+        await UI_Actions.clickByText(page, formName);
+
+}
+
+export function loadTargetScreenNames() {
+    const fileContent = fs.readFileSync(env.PROGRAMS_LIST_PATH, "utf-8");
+    const programs = JSON.parse(fileContent);
+    const names = programs.map((program) => program.programName);
+    console.log("📂 Loaded screen names from ProgramsList.json:", names);
+    return names;
+}
+
+export const REQUEST_PAYLOAD_GETTREE = {
+    jsonrpc: "2.0",
+    id: 28,
+    method: "studio/screens.getTree",
+    params: {
+        force: true,
+        getAllModules: true,
+        inputPath: env.smartuxInputPath,
+        recreateSmartUXInput: true,
+        appId: "New",
+        appsDir: "D:\\Magic\\XPA4121\\Projects\\New\\output",
+        wsConnectionId: "studio-df2b40c8-0eb7-4830-bc7a-6886f87c492a",
+    },
+};
+
+export const REQUEST_PAYLOAD_GETSYNCHEDCOMPONENTS={
+    jsonrpc: "2.0",
+    id: 28,
+    method: "studio/applications.getSyncedComponents",
+    params: {
+    force: true,
+        getAllModules: true,
+        recreateSmartUXInput: false,
+        inputPath: "D:\\Magic\\XPA4121\\Projects\\New\\SmartUXInput",
+        appId: "New",
+        appsDir: "D:\\Magic\\XPA4121\\Projects\\New\\output",
+        wsConnectionId: "studio-a4344105-fbd0-41d4-b583-e3e309601d6c"
+}
+}
+
+export async function verifyTheComponentList(page) {
+    await commonTasks.clickOnElementBygetByTitle(page, LEFT_PANE_OBJECTS.refreshComponentBtn);
+    await commonTasks.clickOnElementBygetByRole(page, 'button', 'Yes');
+    const url = await commonTasks.getApiUrl();
+    await console.log(url)
+    const apiContext = await request.newContext();
+    const TARGET_SCREEN_NAMES = loadTargetScreenNames();
+    const response = await apiContext.post(url, {
+        data: REQUEST_PAYLOAD_GETTREE,
+        headers: {"Content-Type": "application/json"},
+    });
+    expect(response.ok()).toBeTruthy();
+    const responseBody = await response.json();
+    console.log("\n Response (raw):", JSON.stringify(responseBody, null, 2));
+    // ── Extract all names from the response tree ───────────────────────────
+    const allNames = extractComponentNames(responseBody);
+    console.log("\n All names found in response:", allNames);
+
+    // ── Filter to only the target screen names ────────────────────────────
+    const foundScreens = allNames.filter((name) =>
+        TARGET_SCREEN_NAMES.includes(name)
+    );
+    const missingScreens = TARGET_SCREEN_NAMES.filter(
+        (name) => !allNames.includes(name)
+    );
+
+    console.log("\n Target screens FOUND     :", foundScreens);
+    if (missingScreens.length > 0) {
+        console.warn("Target screens MISSING   :", missingScreens);
+    }
+
+    // ── Store matched screens ─────────────────────────────────────────────
+    const matchedScreens = TARGET_SCREEN_NAMES.map((name) => ({
+        name,
+        foundInResponse: allNames.includes(name),
+    }));
+
+    console.log("\n Matched Screens Summary:");
+    console.table(matchedScreens);
+
+    // ── Assertions ────────────────────────────────────────────────────────
+    expect(
+        responseBody,
+        "Response should not contain a jsonrpc error"
+    ).not.toHaveProperty("error");
+
+    for (const screenName of TARGET_SCREEN_NAMES) {
+        expect(
+            allNames,
+            `Screen "${screenName}" should be present in the response tree`
+        ).toContain(screenName);
+    }
+}
+
+
+export function extractComponentNames(node, names = []) {
+    if (Array.isArray(node)) {
+        for (const item of node) {
+            extractComponentNames(item, names);
+        }
+    } else if (node && typeof node === "object") {
+        if (typeof node["name"] === "string") {
+            names.push(node["name"]);
+        }
+        for (const value of Object.values(node)) {
+            extractComponentNames(value, names);
+        }
+    }
+    return names;
+}
+
+
+export async function verifyTheComponentTree(page){
+    await commonTasks.clickOnElementBygetByTitle(page, LEFT_PANE_OBJECTS.componentOperationPanelBtn)
+    await leftPaneQuestions.componentOperationsPanelQuestions.isLandingPageManusLoaded(page);
+    await verifyTheComponentTreeInOperationalPanel(page);
+}
+
+
+export async function verifyTheComponentTreeInOperationalPanel(page) {
+    const url = await commonTasks.getApiUrl();
+    await console.log(url)
+    const apiContext = await request.newContext();
+    const response = await apiContext.post(url, {
+        data: REQUEST_PAYLOAD_GETSYNCHEDCOMPONENTS,
+        headers: {"Content-Type": "application/json"},
+    });
+    expect(response.ok()).toBeTruthy();
+    const responseBody = await response.json();
+    console.log("\n Response (raw):", JSON.stringify(responseBody, null, 2));
+    // ── Extract all names from the response tree ───────────────────────────
+    const allNames = extractComponentNames(responseBody);
+    console.log("\n All names found in response:", allNames);
+
+    // ── Filter to only the target screen names ────────────────────────────
+    const foundScreens = allNames.filter((name) =>
+        TARGET_SCREEN_NAMES.includes(name)
+    );
+    const missingScreens = TARGET_SCREEN_NAMES.filter(
+        (name) => !allNames.includes(name)
+    );
+
+    console.log("\n Target screens FOUND     :", foundScreens);
+    if (missingScreens.length > 0) {
+        console.warn("Target screens MISSING   :", missingScreens);
+    }
+
+    // ── Store matched screens ─────────────────────────────────────────────
+    const matchedScreens = TARGET_SCREEN_NAMES.map((name) => ({
+        name,
+        foundInResponse: allNames.includes(name),
+    }));
+
+    console.log("\n Matched Screens Summary:");
+    console.table(matchedScreens);
+
+    // ── Assertions ────────────────────────────────────────────────────────
+    expect(
+        responseBody,
+        "Response should not contain a jsonrpc error"
+    ).not.toHaveProperty("error");
+
+    for (const screenName of TARGET_SCREEN_NAMES) {
+        expect(
+            allNames,
+            `Screen "${screenName}" should be present in the response tree`
+        ).toContain(screenName);
+    }
+}
+
+ export async function verifyAddComponent(page){
+    await commonTasks.clickOnElementBygetByTitle(page,LEFT_PANE_OBJECTS.addComponentBtn);
+     await leftPaneQuestions.addComponentQuestion.isAddComponentDialogLoaded(page);
+}
+
+export async function openWidgetOperationsPanel(page){
+    await commonTasks.clickOnElementBygetByTitle(page,LEFT_PANE_OBJECTS.widgetOperationPanelBtn);
+}
+export async function openWidgetPaneVerifyControls(page){
+    await openComponentInCanvas(page,"Caller","caller");
+    await commonTasks.clickOnElement(page,CORE_STUDIO_OBJECTS.uxWidgetsPane);
+    await openWidgetOperationsPanel(page);
+    await leftPaneQuestions.isWidgetPageOpened.isWidgetDialogueControlsVisible(page);
+}
+
+export async function openWidgetsSubPane(page){
+    await leftPaneQuestions.widgetPaneLoaded.isWidgetPaneLoaded(page);
+}
+
+export async function openWidgetsGroupSubPane(page){
+    await commonTasks.clickOnElementBYfilter(page,"span",WIDGETS_MANAGEMENT_APP.widgetGroup)
+    await leftPaneQuestions.widgetGroupLoaded.isWidgetGroupLoaded(page);
+}
+
+export async function openPropertiesPane(page){
+
+    await commonTasks.clickOnElementByLocatorgetByText(page,"#widget-management-app",WIDGETS_MANAGEMENT_APP.properties)
+    await leftPaneQuestions.propertyPaneLoaded.isPropertyPaneLoaded(page);
+
+}
+
+
+export async function openPropertieGroupPane(page){
+    await commonTasks.clickOnElementByLocatorgetByText(page,"span",WIDGETS_MANAGEMENT_APP.propertyGroup)
+    await leftPaneQuestions.propertyGroupLoaded.isPropertyGroupPaneLoaded(page);
+
+}
+
+export async function openFunctionsPaneVerifyControls(page){
+    await commonTasks.clickOnElementBygetByText(page,WIDGETS_MANAGEMENT_APP.functions)
+    await leftPaneQuestions.functionsPaneLoaded.isFunctionsPaneLoaded(page);
+}
+
+export async function openActionsPane(page){
+    await commonTasks.clickOnElementBygetByText(page,WIDGETS_MANAGEMENT_APP.actions)
+    await page.pause();
+    await leftPaneQuestions.actionsPaneLoaded.isActionsPaneLoaded(page)
+}import env from "../../../config/env.json";
+import fs from "fs";
+
+export async function clickOnElement(page,locator) {
+    await page.locator(locator).click();
+    await console.log(locator+ " clicked");
+}
+
+export async function clickOnElementBygetByTitle(page,locator) {
+    await page.getByTitle(locator).click();
+    await console.log(locator+ " clicked");
+}
+export async function clickOnElementBygetByRole(page,controlType,controlValue) {
+    await page.getByRole(controlType,{name: controlValue}).click();
+    await console.log(controlValue+ " " +controlType+ "  clicked");
+}
+export async function clickOnElementBygetByText(page,controlValue){
+    await page.getByText(controlValue).click();
+    await console.log(controlValue+" clicked");
+}
+
+export async function clickOnElementBYfilter(page,tagName,text){
+    page.locator(tagName).filter({ hasText: text }).click();
+    await console.log(text+" clicked");
+}
+export async function clickOnElementByLocatorgetByText(page,locator,controlValue){
+    await page.locator(locator).getByText(controlValue).click();
+    await console.log(controlValue+" clicked");
+}
+export async function getApiUrl() {
+    const urlText = fs.readFileSync(env.urlFile, "utf8").trim();
+
+    const parsedUrl = new URL(urlText);
+    return parsedUrl.origin + "/api";
+} import * as commonQuestions from "./commonQuestions";
+import {LEFT_PANE_OBJECTS} from "../pageObjects/leftPaneObjects";
+import {WIDGETS_MANAGEMENT_APP} from "../pageObjects/leftPaneObjects"
+import * as commonTasks from "../tasks/commonTasks";
+import {clickOnElementBYfilter} from "../tasks/commonTasks";
+
+export const componentOperationsPanelQuestions = {
+    async isLandingPageManusLoaded(page) {
+
+        await commonQuestions.isElementVisible(
+            page.getByRole('heading', {name: LEFT_PANE_OBJECTS.componentOperationPanelBtn})
+        );
+
+        await commonQuestions.isElementVisible(
+            page.getByText(LEFT_PANE_OBJECTS.angularComponentHeading)
+        );
+
+        await commonQuestions.isElementVisible(
+            page.getByText(LEFT_PANE_OBJECTS.xpaProgramsHeading)
+        );
+
+        await commonQuestions.isElementVisible(
+            page.getByRole('textbox', {name: LEFT_PANE_OBJECTS.searchAngularComponentTextBox})
+        )
+        await commonQuestions.isElementVisible(
+            page.getByRole('textbox', {name: LEFT_PANE_OBJECTS.searchProgramTextBox})
+        )
+        await commonQuestions.isElementVisible(
+            page.locator(LEFT_PANE_OBJECTS.refreshBtn)
+        )
+        await commonQuestions.isElementVisible(
+            page.getByRole('button', { name: LEFT_PANE_OBJECTS.doneBtn})
+        )
+    }
+}
+
+export const addComponentQuestion = {
+    async isAddComponentDialogLoaded(page) {
+
+    await commonQuestions.isElementVisible(
+        page.getByRole('heading', { name: LEFT_PANE_OBJECTS.addProgramHeading }))
+
+    await commonQuestions.isElementVisible(
+        page.getByTitle(LEFT_PANE_OBJECTS.refreshBtnOnAddComponentDialogue))
+
+    await commonQuestions.isElementVisible(
+        page.getByRole('textbox', { name: LEFT_PANE_OBJECTS.searchProgram})
+    )
+
+    await commonQuestions.isElementVisible(
+        page.getByText(LEFT_PANE_OBJECTS.selectProgram)
+    )
+
+    await commonQuestions.isElementVisible(
+        page.getByRole('button', { name: LEFT_PANE_OBJECTS.cancelBtn})
+    )}
+}
+
+export const isWidgetPageOpened={
+    async isWidgetDialogueControlsVisible(page) {
+        await commonQuestions.isElementVisible(
+            page.getByRole('heading', { name:WIDGETS_MANAGEMENT_APP.widgetOperationalPanelHeading })
+        )
+        await commonQuestions.isElementVisible(
+            page. getByText(WIDGETS_MANAGEMENT_APP.widgetsPane).nth(3)
+        )
+
+        await commonQuestions.isElementVisible(
+            page.locator('span').filter({ hasText:WIDGETS_MANAGEMENT_APP.widgetGroup })
+        )
+
+        await commonQuestions.isElementVisible(
+            page.locator('#widget-management-app span').filter({ hasText: WIDGETS_MANAGEMENT_APP.properties })
+        )
+
+        await commonQuestions.isElementVisible(
+            page.locator('span').filter({ hasText: WIDGETS_MANAGEMENT_APP.propertyGroup })
+        )
+
+        await commonQuestions.isElementVisible(
+            page.getByText(WIDGETS_MANAGEMENT_APP.actions)
+        )
+
+        await commonQuestions.isElementVisible(
+            page.getByText(WIDGETS_MANAGEMENT_APP.functions)
+        )
+
+        await commonQuestions.isElementVisible(
+            page.getByText(WIDGETS_MANAGEMENT_APP.functions)
+        )
+
+        await commonQuestions.isElementVisible(
+            page.getByRole('button', { name: WIDGETS_MANAGEMENT_APP.closeBtn, exact: true })
+        )
+        await commonQuestions.isElementVisible(
+            page.getByRole('button', { name: WIDGETS_MANAGEMENT_APP.closeDialogue, exact: true })
+        )
+
+}
+
+}
+
+export const widgetPaneLoaded = {
+    async isWidgetPaneLoaded(page) {
+        await commonQuestions.isElementVisible(
+            page.getByText(WIDGETS_MANAGEMENT_APP.widgetsPane).nth(4)
+        )
+        await commonQuestions.isElementVisible(
+            page.getByRole('button', { name: 'Details' })
+        )
+        await commonQuestions.isElementVisible(
+            page.getByRole('button', { name: 'Template' })
+        )
+        await commonQuestions.isElementVisible(
+            page.getByRole('button', { name: 'Properties', exact: true })
+        )
+        await commonQuestions.isElementVisible(
+            page.getByRole('button', { name: 'Hidden Properties' })
+        )
+        await verifyAllCommonControls.isAllCommonControlsLoaded(page)
+    }
+}
+
+ export const verifyAllCommonControls={
+    async isAllCommonControlsLoaded(page){
+        await commonQuestions.isElementVisible(
+            page.getByRole('button', { name: WIDGETS_MANAGEMENT_APP.searchBtn})
+        )
+        await commonQuestions.isElementVisible(
+            page.getByRole('button', { name: WIDGETS_MANAGEMENT_APP.closeBtn, exact: true })
+        )
+
+    }
+}
+
+export const widgetGroupLoaded = {
+    async isWidgetGroupLoaded(page) {
+
+        await commonQuestions.isElementVisible(
+            page.getByText(WIDGETS_MANAGEMENT_APP.widgetGroupSubMenu)
+        )
+        await commonQuestions.isElementVisible(
+            page.getByRole('button', { name: WIDGETS_MANAGEMENT_APP.searchBtn })
+        )
+        await commonQuestions.isElementVisible(
+            page.getByText(WIDGETS_MANAGEMENT_APP.groupDetails)
+        )
+        await commonQuestions.isElementVisible(
+            page.getByText(WIDGETS_MANAGEMENT_APP.groupID)
+        )
+        await commonQuestions.isElementVisible(
+            page.getByText(WIDGETS_MANAGEMENT_APP.groupLabel)
+        )
+        await commonQuestions.isElementVisible(
+            page. getByRole('strong').filter({ hasText: WIDGETS_MANAGEMENT_APP.widgetsPane })
+        )
+        await verifyAllCommonControls.isAllCommonControlsLoaded(page)
+
+    }
+
+}
+
+export const propertyPaneLoaded = {
+    async isPropertyPaneLoaded(page) {
+        await commonQuestions.isElementVisible(
+            page.getByText(WIDGETS_MANAGEMENT_APP.properties).nth(2)
+        )
+        await commonQuestions.isElementVisible(
+            page.getByText(WIDGETS_MANAGEMENT_APP.propertyDetails)
+
+        )
+        await commonQuestions.isElementVisible(
+            page.getByText(WIDGETS_MANAGEMENT_APP.basicProperties)
+        )
+        await commonQuestions.isElementVisible(
+            page.getByText(WIDGETS_MANAGEMENT_APP.associatedWidget)
+        )
+
+        await commonQuestions.isElementVisible(
+            page.getByText(WIDGETS_MANAGEMENT_APP.description, { exact: true })
+        )
+        await verifyAllCommonControls.isAllCommonControlsLoaded(page)
+    }
+
+}
+
+export const propertyGroupLoaded = {
+    async isPropertyGroupPaneLoaded(page) {
+        await commonQuestions.isElementVisible(
+            page.getByText(WIDGETS_MANAGEMENT_APP.propertyGroups)
+        )
+        await commonQuestions.isElementVisible(
+            page.getByText(WIDGETS_MANAGEMENT_APP.groupDetails)
+        )
+
+        await commonQuestions.isElementVisible(
+            page.getByText(WIDGETS_MANAGEMENT_APP.groupID)
+        )
+        await commonQuestions.isElementVisible(
+            page.getByText(WIDGETS_MANAGEMENT_APP.groupLabel)
+        )
+        await verifyAllCommonControls.isAllCommonControlsLoaded(page)
+
+
+    }
+
+}
+
+export const functionsPaneLoaded = {
+    async isFunctionsPaneLoaded(page) {
+
+        await commonQuestions.isElementVisible(
+            page.getByText(WIDGETS_MANAGEMENT_APP.functions).nth(1)
+        )
+        await commonQuestions.isElementVisible(
+       page.getByText(WIDGETS_MANAGEMENT_APP.definition)
+        )
+
+        await commonQuestions.isElementVisible(
+            page.getByText(WIDGETS_MANAGEMENT_APP.associatedWidgetPane)
+        )
+
+        await commonQuestions.isElementVisible(
+            page. getByRole('button', { name: 'Search' })
+        )
+
+    }
+
+}
+
+export const actionsPaneLoaded = {
+    async isActionsPaneLoaded(page) {
+        await commonQuestions.isElementVisible(
+            page.getByText(WIDGETS_MANAGEMENT_APP.actions)
+        )
+        await commonQuestions.isElementVisible(
+            page.getByText(WIDGETS_MANAGEMENT_APP.definition)
+        )
+
+        await commonQuestions.isElementVisible(
+            page.getByText(WIDGETS_MANAGEMENT_APP.associatedWidgetPane)
+        )
+    }
+
+}export const LEFT_PANE_OBJECTS = {
+    componentTitle:"Components",
+    magicNode: "magic",
+    magicGenLibModule: "MagicGenLibModule",
+    componentOperationPanelBtn:"Component operations panel",
+    routesBtn:"Configure Routes",
+    addComponentBtn:"Add Component",
+    refreshComponentBtn:"Refresh Components",
+    widgetOperationPanelBtn:"Configure Widgets",
+    searchWidgetBtn:"Search UX Widgets",
+    refreshUXWidgetsBtn:"Refresh UX Widgets",
+    searchAngularComponentTextBox:"Search Angular Component",
+    angularComponentHeading:"Angular Component",
+    xpaProgramsHeading:"XPA Programs",
+    searchProgramTextBox:"Search Program",
+    doneBtn:"Done",
+    refreshBtn:"#ngdialog1",
+    addProgramHeading:"Add Program",
+    refreshBtnOnAddComponentDialogue:"Refresh Program List",
+    searchProgram:"Search Program",
+    selectProgram:"Select Program",
+    cancelBtn:"Cancel",
+
+};
+
+export const WIDGETS_MANAGEMENT_APP={
+    widgetOperationalPanelHeading:"Widget Operations Panel",
+    widgetsPane:"Widgets",
+    widgetGroup:"Widget Group",
+    properties:"Properties",
+    propertyGroup:"Property Group",
+    functions:"Functions",
+    actions:"Actions",
+    closeBtn:"Close",
+    closeDialogue:"Close dialog",
+    widgetGroupSubMenu:"Widget Groups",
+    searchBtn:"Search",
+    groupDetails:"Group Details",
+    groupID:"Group ID",
+    groupLabel:"Group Label",
+    propertyGroups:"Property Groups",
+    propertyDetails:"Property Details",
+    basicProperties:"Basic Properties",
+    associatedWidget:"Associated Widgets",
+    description:"Description",
+    definition:"Definition",
+    associatedWidgetPane:"Associated Properties (1)"
+
+
+}  you are Automation expert in playwright please explain this arch to stakeholders how will you do that

@@ -1,5 +1,5 @@
 const {test,expect}= require('@playwright/test');
-
+test.describe.configure({mode:"parallel"})
 test('Browser context Test Case ',async ({browser}) =>
     {
         //JS is asynchronous so for each steps you need to call await to wait for current step

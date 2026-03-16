@@ -13,4 +13,6 @@ test("screenShots tests ", async ({page}) => {
 test("Visual Testing with screenshot comparison", async ({page}) => {
     await page.goto("https://Google.com/");
     expect(await page.screenshot()).toMatchSnapshot("landingPage.png");
+
+
 })
