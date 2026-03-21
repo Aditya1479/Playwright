@@ -135,9 +135,9 @@ text=''
 5.export that class => module.exports={LoginPage};
 6.create a POM manager file and create a class where constructor will have the object of
 => this.page=page
-also will call the page layers like =>
+also will call the page with creating object of each page like =>
 => this.loginPage = new LoginPage(page);
-and create a methods to return the pages in it
+and create a methods to open the pages in browser
  => getLoginPage() {
        return this.loginPage
     }
@@ -155,7 +155,7 @@ const poManager =new POManager(page)
 json>string>js object
 const dataset= JSON.parse(JSON.stringify(require("../utils/placeOrderTestData.json")));
 
-11. To run the script for number of datas
+11. To run the script for number of data
 create array of json in utils folder like
 [{
  "username" : "Aditya123@gmail.com",
@@ -170,7 +170,7 @@ create array of json in utils folder like
     "url": "https://rahulshettyacademy.com/client"
   }
 ]
-and the use a for loop to run the script for different datasets
+and the use a for loop before the test to run the script for different datasets
 and this in testscript file for(const data of dataset) {test ()}
 
 12.How to pass test data as fixture by extend test annotation behaviour
@@ -216,7 +216,19 @@ and this in testscript file for(const data of dataset) {test ()}
      so your job is created now click on build project with parameter.
 
      ===============================Cucumber======================================================
-     1.Feature file setup
+     1.Cucumber installation => npm install @cucumber/cucumber
+     2.Create Feature folder in root dir and create one demo.feature file in it
+     and add the cucumber behavior into it
+     Feature: Ecommerce Validation
+
+       Scenario: Placing the orders
+         Given a login to Ecommerce application with "ditya123@gmail.com" and "Aditya@3098"
+         When Add "ZARA COAT 3" to cart
+         Then Verify "ZARA COAT 3" is displayed in Cart
+         When Enter Valid Details and Place the Order
+         Then Verify Order is present in Order History
+     3.create step definition folder in features file.
+        and add the Given when then method in this file.
 
 
 =========================================FRAMEWORK EXPLAINATION=========================================

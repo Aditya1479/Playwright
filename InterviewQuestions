@@ -1,0 +1,214 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Q: How do you handle multiple windows or tabs in Playwright?
+    Playwright handles new windows using the page.waitForEvent('popup') or context.waitForEvent('page').
+    const [newPage] = await Promise.all([
+      context.waitForEvent('page'),
+      page.click('text=Open Window')
+    ]);
+
+    await newPage.waitForLoadState();
+    console.log(await newPage.title());
+
+Q: How do you handle JavaScript alerts in Playwright?
+    Playwright listens to the dialog event.
+    page.on('dialog', async dialog => {
+      console.log(dialog.message());
+      await dialog.accept();
+    });
+
+    await page.click('#alertButton');
+
+Q: How do you handle popup windows?
+    const popupPromise = page.waitForEvent('popup');
+    await page.click('#openPopup');
+    const popup = await popupPromise;
+
+    await popup.waitForLoadState();
+
+Q: How does Playwright support parallel execution?
+    Playwright runs tests in parallel using workers.
+    Configuration in playwright.config.js:
+    module.exports = {
+      workers: 4
+    };
+    npx playwright test --workers=4
+
+Q Excel Reading
+    Playwright does not have built-in Excel support. We use libraries like:
+    xlsx
+    exceljs
+    const XLSX = require('xlsx');
+
+    const workbook = XLSX.readFile('data.xlsx');
+    const sheet = workbook.Sheets['Sheet1'];
+
+    const data = XLSX.utils.sheet_to_json(sheet);
+
+    console.log(data);
+
+Q Excel Writing
+    const XLSX = require('xlsx');
+
+    const data = [
+     {name: "John", age: 30}
+    ];
+
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+
+    XLSX.writeFile(workbook, "output.xlsx");
+
+Q: How do you store cookies in Playwright?
+    await context.storageState({ path: 'auth.json' });
+    which saves
+    cookies
+    local storage
+    session storage
+
+Q: Using Stored Cookies
+    const context = await browser.newContext({
+      storageState: 'auth.json'
+    });
+
+Q: API Testing with Playwright
+    const requestContext = await request.newContext();
+
+    const response = await requestContext.get('https://api.example.com/users');
+
+    expect(response.status()).toBe(200);
+
+    const body = await response.json();
+    console.log(body);
+
+Q: networkIdle
+    It waits until no network requests are pending for 500ms.
+    await page.waitForLoadState('networkidle');
+    Used when:
+    page loads multiple APIs
+    SPA applications
+    dynamic content loading
+
+Q: How do you take screenshots?
+    Full page:
+    await page.screenshot({ path: 'page.png', fullPage: true });
+
+    Element screenshot:
+    await page.locator('#logo').screenshot({ path: 'logo.png' });
+
+    Automatic screenshot on failure:
+    use: {
+      screenshot: 'only-on-failure'
+    }
+
+Q: How do you handle iframes in Playwright?
+    Using frameLocator.
+    Example:
+    const frame = page.frameLocator('#iframeId');
+    await frame.locator('#submit').click();
+
+    Alternative:
+    const frame = page.frame({ name: 'frameName' });
+
+Q: How does Playwright handle Auto Waiting?
+   Playwright automatically waits for:
+   element visible
+   element attached
+   element enabled
+   element stable
+
+Q: How do you run tests in multiple browsers?
+    projects: [
+     { name: 'chromium', use: { browserName: 'chromium' }},
+     { name: 'firefox', use: { browserName: 'firefox' }},
+     { name: 'webkit', use: { browserName: 'webkit' }}
+    ]
+
+Q: How do you retry failed tests?
+    retries: 2
+    Example:
+    module.exports = {
+      retries: 2
+    };
+
+Q: How do you handle file uploads?
+      await page.setInputFiles('#upload', 'file.pdf');
+      Multiple files:
+      await page.setInputFiles('#upload', ['a.pdf','b.pdf']);
+
+Q: How do you handle file downloads?
+       const [ download ] = await Promise.all([
+         page.waitForEvent('download'),
+         page.click('#downloadBtn')
+       ]);
+
+       await download.saveAs('file.pdf');
+
+Q: How do you debug Playwright tests?
+   Methods:
+   1️⃣ Inspector
+   npx playwright test --debug
+
+   2️⃣ Pause
+   await page.pause();
+
+   3️⃣ Trace Viewer
+   npx playwright show-trace trace.zip
+
+Q: How do you handle dynamic elements?
+       Use:
+       hasText
+       nth()
+       filter()
+
+       Example:
+       page.locator('button').filter({ hasText: 'Submit' })
+
+Q: What reports does Playwright provide?
+   Playwright provides:
+   HTML report
+   Trace report
+   Screenshots
+   Video recordings
+   Command:
+
+   npx playwright show-report
