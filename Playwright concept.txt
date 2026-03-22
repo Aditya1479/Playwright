@@ -293,7 +293,16 @@ in before hook copy paste the context,browser and page setup code
 and add this.page to be work with framework. and the all page imports like POM.
 --You can provide the tags like (@Regression, @validations)for each scenario in feature file and call it in
 command => npx cucumber-js --tags "@Regression" --exit
-
+===============HOW TO RUN THE TESTS USING DIFFERENT DATASETS==========================================
+FIRSTLY IN ,Feature file you need to change the Scenario argument to Scenario Outline
+and write the parameters and datatset in following format
+Scenario Outline: Placing the orders
+    Given a login to Ecommerce2 application with "<username>" and "<password>"
+    Then verify Error message is displayed.
+    Examples:
+    |username                   | password|
+    |Aditya123@gmail.com        |Aditya@3098|
+    |Aditya1234@gmail.com       |aaaa@123   |
 =========================================FRAMEWORK EXPLAINATION=========================================
 
 In my project we implemented a modular Playwright framework using a layered architecture
