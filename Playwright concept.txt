@@ -303,6 +303,15 @@ Scenario Outline: Placing the orders
     |username                   | password|
     |Aditya123@gmail.com        |Aditya@3098|
     |Aditya1234@gmail.com       |aaaa@123   |
+
+****** npx cucumber-js features/ecommerce.feature --parallel 2 --exit it will run the two scenarios parallely present in
+single feature file***************
+
+=========IMP: YOU CAN NOT RUN THE TWO FEATURE FILES PARALLELY in CUCUMBER==========================================
+
+==npx cucumber-js features/ecommerce.feature --parallel 2 --retry 1 --exit --format html:cucumber-report.html
+will retry the test execution again=======================================================================
+
 =========================================FRAMEWORK EXPLAINATION=========================================
 
 In my project we implemented a modular Playwright framework using a layered architecture

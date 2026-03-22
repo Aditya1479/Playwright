@@ -7,3 +7,12 @@ Feature: Ecommerce Validation
     Then Verify "ADIDAS ORIGINAL" is displayed in Cart
     When Enter Valid Details and Place the Order
     Then Verify Order is present in Order History
+
+  @validation
+  Scenario Outline: Placing the orders
+    Given a login to Ecommerce2 application with "<username>" and "<password>"
+    Then verify Error message is displayed.
+    Examples:
+      |username                   | password|
+      |Aditya123@gmail.com        |Aditya@3098|
+      |Aditya1234@gmail.com       |aaaa@123   |
