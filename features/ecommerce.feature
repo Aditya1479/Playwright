@@ -1,5 +1,6 @@
 Feature: Ecommerce Validation
 
+  @Regression
   Scenario: Placing the orders
     Given a login to Ecommerce application with "Aditya123@gmail.com" and "Aditya@3098"
     When Add "ADIDAS ORIGINAL" to cart

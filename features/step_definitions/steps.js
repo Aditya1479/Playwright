@@ -1,19 +1,14 @@
 const {When,Then, Given }
     =require("@cucumber/cucumber")
-const {POManager} = require('../../pageobjects/POManager');
+
 const {expect} = require("@playwright/test")
 //const { chromium } = require("@playwright");
-const playwright=require("@playwright/test")
-
 
 Given('a login to Ecommerce application with {string} and {string}',{timeout:100*1000},async function (username,password) {
     // Write code here that turns the phrase above into concrete actions
 
-    const browser = await playwright.chromium.launch()
-    const context = await browser.newContext()
-    const page = await context.newPage();
-     this.poManager = new POManager(page);
-    const products = page.locator(".card-body");
+
+    const products = this.page.locator(".card-body");
     const loginPage = this.poManager.getLoginPage();
     await loginPage.goTo("https://rahulshettyacademy.com/client");
     await loginPage.validLogin(username, password);
@@ -49,3 +44,21 @@ Then('Verify Order is present in Order History',async function () {
     await ordersHistoryPage.searchOrderAndSelect(this.orderId);
     expect(this.orderId.includes(await ordersHistoryPage.getOrderId())).toBeTruthy();
 });
+
+Given('a login to Ecommerce2 application with {string} and {string}', async function (username, password) {
+    // Write code here that turns the phrase above into concrete actions
+        await this.page.goto("https://rahulshettyacademy.com/loginpagePractise/");
+        console.log(await this.page.title())
+        const userName=this.page.locator('#username')
+        const passWord=this.page.locator('#password')
+        const signInBtn=this.page.locator('#signInBtn')
+        await userName.fill(username)
+        await passWord.fill(password)
+        await signInBtn.click()
+});
+
+Then('verify Error message is displayed.', async function () {
+    // Write code here that turns the phrase above into concrete actions
+        console.log(await this.page.locator("[style*='block']").textContent())
+         await expect(this.page.locator("[style*='block']")).toContainText("Incorrect")
+    });

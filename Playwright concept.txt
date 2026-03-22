@@ -217,7 +217,7 @@ and this in testscript file for(const data of dataset) {test ()}
 
      ===============================Cucumber======================================================
      1.Cucumber installation => npm install @cucumber/cucumber
-     2.Create Feature folder in root dir and create one demo.feature file in it
+     2.Create step definitions folder in root dir and create one demo.feature file in it
      and add the cucumber behavior into it
      Feature: Ecommerce Validation
 
@@ -227,9 +227,72 @@ and this in testscript file for(const data of dataset) {test ()}
          Then Verify "ZARA COAT 3" is displayed in Cart
          When Enter Valid Details and Place the Order
          Then Verify Order is present in Order History
-     3.create step definition folder in features file.
+     3.create step.js in step definition folder
         and add the Given when then method in this file.
+        In this we use this keyword to use the declaration in different blocks given when then
+      const {When,Then, Given }
+          =require("@cucumber/cucumber")
+      const {POManager} = require('../../pageobjects/POManager');
+      const {expect} = require("@playwright/test")
+      //const { chromium } = require("@playwright");
+      const playwright=require("@playwright/test")
 
+
+      Given('a login to Ecommerce application with {string} and {string}',{timeout:100*1000},async function (username,password) {
+          // Write code here that turns the phrase above into concrete actions
+
+          const browser = await playwright.chromium.launch()
+          const context = await browser.newContext()
+          const page = await context.newPage();
+           this.poManager = new POManager(page);
+          const products = page.locator(".card-body");
+          const loginPage = this.poManager.getLoginPage();
+          await loginPage.goTo("https://rahulshettyacademy.com/client");
+          await loginPage.validLogin(username, password);
+      });
+
+      When('Add {string} to cart', async function (productName) {
+          // Write code here that turns the phrase above into concrete actions
+           this.dashboardPage = this.poManager.getDashboardPage();
+          await this.dashboardPage.searchProductAddCart(productName);
+          await this.dashboardPage.navigateToCart();
+      });
+
+      Then('Verify {string} is displayed in Cart', async function (productName) {
+          // Write code here that turns the phrase above into concrete actions
+
+          const cartPage = this.poManager.getCartPage();
+          await cartPage.VerifyProductIsDisplayed(productName);
+          await cartPage.Checkout();
+      });
+
+      When('Enter Valid Details and Place the Order', async function () {
+          // Write code here that turns the phrase above into concrete actions
+          const ordersReviewPage = this.poManager.getOrdersReviewPage();
+          await ordersReviewPage.searchCountryAndSelect("ind", "India");
+          this.orderId = await ordersReviewPage.SubmitAndGetOrderId();
+          console.log(this.orderId);
+      });
+
+      Then('Verify Order is present in Order History',async function () {
+          // Write code here that turns the phrase above into concrete actions
+           await this.dashboardPage.navigateToOrders();
+          const ordersHistoryPage = this.poManager.getOrdersHistoryPage();
+          await ordersHistoryPage.searchOrderAndSelect(this.orderId);
+          expect(this.orderId.includes(await ordersHistoryPage.getOrderId())).toBeTruthy();
+      });
+    and then running the cucumber as npx cucumber.js
+
+======================================Cucumber Hooks==============================================
+-Use to setup the pre-requisite data.
+-delete the data after test completed.
+Create a support folder is features folder
+create support folder and create hooks.js file
+in that add the before and after hooks from cucumber
+in before hook copy paste the context,browser and page setup code
+and add this.page to be work with framework. and the all page imports like POM.
+--You can provide the tags like (@Regression, @validations)for each scenario in feature file and call it in
+command => npx cucumber-js --tags "@Regression" --exit
 
 =========================================FRAMEWORK EXPLAINATION=========================================
 
