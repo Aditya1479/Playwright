@@ -62,8 +62,7 @@ npx playwright codegen => Playwright codegen (mostly used in standAlone scripts)
 In Playwright CSS and XPATH selectors are supported.
 trace: 'retain-on-failure' =>trace will created for failure tests.
  *****Alert Handling***
- page.on('dialog',dialog => dia
- log.accept())
+ page.on('dialog',dialog => dialog.accept())
      await page.locator("#confirmbtn").click()
 
 await  expect(page.locator('#usertype').last()).toBeChecked()

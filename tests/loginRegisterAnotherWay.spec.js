@@ -27,14 +27,12 @@ test("Rahul Shetty Login", async ({page})=> {
 
     await page.getByRole("button",{name:"India"}).nth(1).click()
 
-
     await page.locator(".user__name input").first().fill(email)
 
     // const actualName= await page.locator(".user__name label").textContent()
     await  expect(page.locator(".user__name label")).toHaveText(email);
     await page.getByText("PLACE ORDER").click()
     await expect(page.getByText("Thankyou for the order.")).toBeVisible()
-
 
     //This needs to be updated according to getBy locator methods
     const orderID=await page.locator(".em-spacer-1 .ng-star-inserted").textContent()

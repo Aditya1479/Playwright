@@ -40,7 +40,9 @@ RahulShettyQa APPS
 
 
 Q: How do you handle multiple windows or tabs in Playwright?
-    Playwright handles new windows using the page.waitForEvent('popup') or context.waitForEvent('page').
+    Playwright handles new windows using the
+    page.waitForEvent('popup') or context.waitForEvent('page').
+
     const [newPage] = await Promise.all([
       context.waitForEvent('page'),
       page.click('text=Open Window')
