@@ -62,8 +62,7 @@ npx playwright codegen => Playwright codegen (mostly used in standAlone scripts)
 In Playwright CSS and XPATH selectors are supported.
 trace: 'retain-on-failure' =>trace will created for failure tests.
  *****Alert Handling***
- page.on('dialog',dialog => dia
- log.accept())
+ page.on('dialog',dialog => dialog.accept())
      await page.locator("#confirmbtn").click()
 
 await  expect(page.locator('#usertype').last()).toBeChecked()
@@ -135,9 +134,9 @@ text=''
 5.export that class => module.exports={LoginPage};
 6.create a POM manager file and create a class where constructor will have the object of
 => this.page=page
-also will call the page layers like =>
+also will call the page with creating object of each page like =>
 => this.loginPage = new LoginPage(page);
-and create a methods to return the pages in it
+and create a methods to open the pages in browser
  => getLoginPage() {
        return this.loginPage
     }
@@ -155,7 +154,7 @@ const poManager =new POManager(page)
 json>string>js object
 const dataset= JSON.parse(JSON.stringify(require("../utils/placeOrderTestData.json")));
 
-11. To run the script for number of datas
+11. To run the script for number of data
 create array of json in utils folder like
 [{
  "username" : "Aditya123@gmail.com",
@@ -170,7 +169,7 @@ create array of json in utils folder like
     "url": "https://rahulshettyacademy.com/client"
   }
 ]
-and the use a for loop to run the script for different datasets
+and the use a for loop before the test to run the script for different datasets
 and this in testscript file for(const data of dataset) {test ()}
 
 12.How to pass test data as fixture by extend test annotation behaviour
@@ -216,8 +215,101 @@ and this in testscript file for(const data of dataset) {test ()}
      so your job is created now click on build project with parameter.
 
      ===============================Cucumber======================================================
-     1.Feature file setup
+     1.Cucumber installation => npm install @cucumber/cucumber
+     2.Create step definitions folder in root dir and create one demo.feature file in it
+     and add the cucumber behavior into it
+     Feature: Ecommerce Validation
 
+       Scenario: Placing the orders
+         Given a login to Ecommerce application with "ditya123@gmail.com" and "Aditya@3098"
+         When Add "ZARA COAT 3" to cart
+         Then Verify "ZARA COAT 3" is displayed in Cart
+         When Enter Valid Details and Place the Order
+         Then Verify Order is present in Order History
+     3.create step.js in step definition folder
+        and add the Given when then method in this file.
+        In this we use this keyword to use the declaration in different blocks given when then
+      const {When,Then, Given }
+          =require("@cucumber/cucumber")
+      const {POManager} = require('../../pageobjects/POManager');
+      const {expect} = require("@playwright/test")
+      //const { chromium } = require("@playwright");
+      const playwright=require("@playwright/test")
+
+
+      Given('a login to Ecommerce application with {string} and {string}',{timeout:100*1000},async function (username,password) {
+          // Write code here that turns the phrase above into concrete actions
+
+          const browser = await playwright.chromium.launch()
+          const context = await browser.newContext()
+          const page = await context.newPage();
+           this.poManager = new POManager(page);
+          const products = page.locator(".card-body");
+          const loginPage = this.poManager.getLoginPage();
+          await loginPage.goTo("https://rahulshettyacademy.com/client");
+          await loginPage.validLogin(username, password);
+      });
+
+      When('Add {string} to cart', async function (productName) {
+          // Write code here that turns the phrase above into concrete actions
+           this.dashboardPage = this.poManager.getDashboardPage();
+          await this.dashboardPage.searchProductAddCart(productName);
+          await this.dashboardPage.navigateToCart();
+      });
+
+      Then('Verify {string} is displayed in Cart', async function (productName) {
+          // Write code here that turns the phrase above into concrete actions
+
+          const cartPage = this.poManager.getCartPage();
+          await cartPage.VerifyProductIsDisplayed(productName);
+          await cartPage.Checkout();
+      });
+
+      When('Enter Valid Details and Place the Order', async function () {
+          // Write code here that turns the phrase above into concrete actions
+          const ordersReviewPage = this.poManager.getOrdersReviewPage();
+          await ordersReviewPage.searchCountryAndSelect("ind", "India");
+          this.orderId = await ordersReviewPage.SubmitAndGetOrderId();
+          console.log(this.orderId);
+      });
+
+      Then('Verify Order is present in Order History',async function () {
+          // Write code here that turns the phrase above into concrete actions
+           await this.dashboardPage.navigateToOrders();
+          const ordersHistoryPage = this.poManager.getOrdersHistoryPage();
+          await ordersHistoryPage.searchOrderAndSelect(this.orderId);
+          expect(this.orderId.includes(await ordersHistoryPage.getOrderId())).toBeTruthy();
+      });
+    and then running the cucumber as npx cucumber.js
+
+======================================Cucumber Hooks==============================================
+-Use to setup the pre-requisite data.
+-delete the data after test completed.
+Create a support folder is features folder
+create support folder and create hooks.js file
+in that add the before and after hooks from cucumber
+in before hook copy paste the context,browser and page setup code
+and add this.page to be work with framework. and the all page imports like POM.
+--You can provide the tags like (@Regression, @validations)for each scenario in feature file and call it in
+command => npx cucumber-js --tags "@Regression" --exit
+===============HOW TO RUN THE TESTS USING DIFFERENT DATASETS==========================================
+FIRSTLY IN ,Feature file you need to change the Scenario argument to Scenario Outline
+and write the parameters and datatset in following format
+Scenario Outline: Placing the orders
+    Given a login to Ecommerce2 application with "<username>" and "<password>"
+    Then verify Error message is displayed.
+    Examples:
+    |username                   | password|
+    |Aditya123@gmail.com        |Aditya@3098|
+    |Aditya1234@gmail.com       |aaaa@123   |
+
+****** npx cucumber-js features/ecommerce.feature --parallel 2 --exit it will run the two scenarios parallely present in
+single feature file***************
+
+=========IMP: YOU CAN NOT RUN THE TWO FEATURE FILES PARALLELY in CUCUMBER==========================================
+
+==npx cucumber-js features/ecommerce.feature --parallel 2 --retry 1 --exit --format html:cucumber-report.html
+will retry the test execution again=======================================================================
 
 =========================================FRAMEWORK EXPLAINATION=========================================
 
