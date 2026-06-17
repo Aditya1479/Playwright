@@ -65,3 +65,43 @@ await page.click('Download');
 const download =await downloadPromise;
 
 await download.saveAs('file.pdf');
+
+Q. list of assertions
+	1. toBe()= exact match
+			expect(statusCode).toBe(200);
+	2.	toEqual()= Object/Array Comparison
+			expect(userDetails).toEqual(expectedUserDetails);
+	3.	toContain()= partial match
+			expect(message).toContain("Success");
+	4.	toBeTruthy
+			expect(isDisplayed).toBeTruthy();
+	5.  toBeFalsy
+			expect(isErrorDisplayed).toBeFalsy();
+IMP	6.	toBeVisible = Most Commmonly used.
+			await expect(page.getByRole('button',{name:'Login'})).toBeVisib();
+	7. 	toBeHidden()
+			await expect(locator).toBeHidden();
+	8.	toBeEnabled()
+			await expect(locator).toBeEnabled();
+	9.	toBeDisabled()
+			await expect(locator).toBeDisabled();
+	10.	toBeChecked()
+			await expect(locator).toBeChecked();
+IMP	11.	toHaveText()
+			await expect(locator).toHaveText("Welcome Aditya");
+IMP	12.	toContainText()
+			await expect(locator).toContainText("Hello Aditya");
+	13. toHaveValue()
+			await expect(locator).toHaveValue()
+	14. toHaveAttribute()
+			await expect(locator).toHaveAttribute("type","submit");
+IMP	15.	toHaveURL()
+			await expect(page).toHaveURL("xyz)
+	16.	toHaveTitle()
+			await expect(page).toHaveTitle("abc")
+	17.	toHaveCount()
+			await expect(page.locator("product")).toHaveCount(6)
+	18.	expect(response.status()).toBe(200);
+	19.	expect(responseBody.userName).toBe("Aditya");
+	20.	expect(responseBody.message).toContain("Success");
+	
