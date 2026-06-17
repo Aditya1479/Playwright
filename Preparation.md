@@ -104,4 +104,48 @@ IMP	15.	toHaveURL()
 	18.	expect(response.status()).toBe(200);
 	19.	expect(responseBody.userName).toBe("Aditya");
 	20.	expect(responseBody.message).toContain("Success");
-	
+
+
+Q. how to handle new page in Playwright
+	const [newPage]= await Promise.all([
+		context.waitForEvent('page')
+		page.locator(locator).click()
+	]);
+
+Q. How to Handle pop up
+	const [popup]= await promise.all([
+		page.waitForEvent('popup')
+		page.locator(locator).click()
+		page.locator(locator).accept()
+	])
+
+Q. How to Handle alerts.
+	page.on(async dialog => {
+		await dialog.accept();
+	})
+
+Q. How to download files from browser
+	await [download] = await Promise.all([
+		page.waitForEvent('download')
+		page.click('#download-')
+	])
+	await download.saveAs('downloads/abc.pdf')
+
+Q.	how to upload the files.
+	await page.setInputFile('uploadButton','filePath')
+
+Q. how to you handle excel files.
+	import * as XLSX from 'xlsx'
+	const workbook= XLSX.readFile('filePath')
+	const sheet =	workbook.Sheets[sheetName/sheetIndex]
+	const data	=XLSX.utils.sheet_to_json(sheet);
+	console.log(data)
+
+Q. How do you handle json file
+	using direct import or using fs library
+	######Read the JSON
+	import fs from 'fs'
+	const data = JSON.parse(fs.readFilesync('data.json'),'utf8')
+	######write the JSON
+	const result= {status:'pass', time:'2s'}
+	fs.writeFileSync('output/result.json', JSON.stringify(result,null,2));
