@@ -1,0 +1,174 @@
+This is actually a very good interview question because it tests whether you understand JavaScript fundamentals vs Framework Design Patterns.
+
+There are two common ways you'll see Playwright frameworks built:
+
+Approach 1: Class-Based Framework (Recommended)
+
+Example:
+
+class LoginPage {
+
+    constructor(page) {
+        this.page = page;
+        this.userName = page.locator('#user');
+        this.password = page.locator('#pass');
+        this.loginBtn = page.locator('#login');
+    }
+
+    async login(user, pass) {
+        await this.userName.fill(user);
+        await this.password.fill(pass);
+        await this.loginBtn.click();
+    }
+}
+
+module.exports = { LoginPage };
+
+Usage:
+
+const { LoginPage } = require('./LoginPage');
+
+const loginPage = new LoginPage(page);
+
+await loginPage.login("admin","admin123");
+Advantages
+
+✅ Encapsulation
+
+this.userName
+this.password
+this.loginBtn
+
+belong to LoginPage only.
+
+✅ Reusability
+
+One object can be reused throughout the test.
+
+const loginPage = new LoginPage(page);
+
+✅ Supports Inheritance
+
+class BasePage {
+   async goto(url){}
+}
+
+class LoginPage extends BasePage {
+}
+
+✅ Better for Large Frameworks
+
+Most enterprise Playwright frameworks use:
+
+Classes
+Constructors
+Page Object Model
+Page Manager
+Approach 2: Pure JavaScript Module Exports
+
+Example:
+
+async function login(page,user,pass){
+
+   await page.locator('#user').fill(user);
+   await page.locator('#pass').fill(pass);
+   await page.locator('#login').click();
+}
+
+module.exports = {
+   login
+};
+
+Usage:
+
+const loginActions = require('./loginActions');
+
+await loginActions.login(
+    page,
+    "admin",
+    "admin123"
+);
+Advantages
+
+✅ Simpler
+
+✅ Less code
+
+✅ Easier for small projects
+
+Disadvantages
+
+You repeatedly pass page:
+
+login(page,user,pass)
+logout(page)
+search(page,product)
+
+Every method needs page.
+
+Constructor Benefit
+
+Without Constructor:
+
+async login(page,user,pass)
+
+Need page every time.
+
+With Constructor:
+
+constructor(page){
+   this.page = page;
+}
+
+Now:
+
+async login(user,pass)
+
+Cleaner.
+
+Deloitte Interview Answer
+
+If asked:
+
+Why did you use classes and constructors in your Playwright framework?
+
+Answer:
+
+I used a class-based Page Object Model because it provides encapsulation, reusability, and maintainability. The constructor initializes page and locators once when the object is created, eliminating the need to pass the page object repeatedly. This approach also supports inheritance through a BasePage and scales well for large automation frameworks.
+
+Modern TypeScript Frameworks
+
+Most companies moving to Playwright today use:
+
+Playwright
+TypeScript
+Class-based POM
+Fixtures
+Page Object Manager
+BasePage
+Utility Classes
+
+Example:
+
+export class LoginPage {
+
+   constructor(private page: Page) {}
+
+   async login(username:string,password:string){
+      ...
+   }
+}
+
+This is the pattern you'll see in mature frameworks at Deloitte, Accenture, Cognizant, Capgemini, and product companies.
+
+For your Deloitte interview
+
+If they ask:
+
+"Why not use only functions and module exports?"
+
+Say:
+
+Functions work well for small utilities, but for page objects I prefer classes because they keep locators and page actions together, improve code organization, support inheritance, and make the framework easier to maintain as it grows.
+
+That's the answer that demonstrates framework design thinking rather than just coding knowledge.

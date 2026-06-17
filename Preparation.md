@@ -143,9 +143,52 @@ Q. how to you handle excel files.
 
 Q. How do you handle json file
 	using direct import or using fs library
-	######Read the JSON
+	######Read the JSON########
 	import fs from 'fs'
 	const data = JSON.parse(fs.readFilesync('data.json'),'utf8')
-	######write the JSON
+	######write the JSON######
 	const result= {status:'pass', time:'2s'}
 	fs.writeFileSync('output/result.json', JSON.stringify(result,null,2));
+
+Q.  How do you handle dynamic and delayed elements?
+    1.playwright automatically waits for element to be visible using autowait
+    2. waitForURL()
+    3.await expect(page.locator('xyz')).toBeVisible();
+    4.await page.waitForLoadState('networkIdle')
+    5.explicit wait for specific element with state + timeout
+        await page.locator('locator').waitFor({state:'visible', timeout:1000});
+
+Q. what are fixtures in playwright?
+    1. built in fixtures: page, browser, context.
+    2. custome fixture
+        creating custome fixture by extending the test 
+    e.g 
+        import {test as base} from '@playwright/test'
+        export const test = base.extend({
+            loggedInPage= async ({page},use) => {
+            await page.goto('/login')
+            await use(page)
+        )   
+
+Q.  what is testInfo and testError objects?
+    testInfo()=> provides metadata and runtime details of a test 
+    testError()=> provides details when a test fails and is accessed via testinfo.error
+    testInfo/testError objets use at inside beforeEach and afterEach hooks to get the tests details 
+    and for handling error and debugging
+
+Q. How do you share data across your tests?
+    how do you handle data driven tests?
+    how do you paramterised tests?
+    1. using test.describe() with external JSON/Excel testdata files
+    2. we can use fixtures and parameterized tests
+    3. fixture
+    e.g 1
+        const dataset= JSON.parse(JSON.stringify(require("../utils/placeOrderTestData.json")));
+        for(const data of dataset)
+        {
+        test(`@Web Client App login ${data.productName}`, async ({page}) => {
+        const poManager = new POManager(page);
+        const products = page.locator(".card-body");
+    e.g 2
+        test.describe.each(dataset)
+
