@@ -20,7 +20,7 @@ Recommended							When you need frame APIs									For most UI automation
 Modern Playwright					Less used													Preferred
 
 Q. different techniques of parallel run in playwright and cross browser
-		1. Playwright runs test files in parallel using worker processes 	playwright.config.js.
+		1. Playwright runs test files in parallel using worker processes playwright.config.js.
 		2.Parallel Within a Single Describe Block all test, all test present in single file will run parallely
 			e.g test.describe.configure({
 				mode: 'parallel'
@@ -192,3 +192,50 @@ Q. How do you share data across your tests?
     e.g 2
         test.describe.each(dataset)
 
+Q	how do you handle table elemenst in playwright.
+	e.g
+	Employee	Role	Status		Action
+	Aditya	QA			Active		Edit
+	Rahul	Dev			Active		Edit
+	Amit	Manager		Inactive	Edit
+
+
+	Click Edit for "Rahul"
+		const row = page.locator('tr').
+		filter({has: page.locator('td', {
+			hasText: 'Rahul'
+			})
+		});
+
+	await row.getByRole('button', {
+		name: 'Edit'
+	}).click();
+
+
+/////////////////////////////////////SDET//////////////////////////////
+
+Q. What is common status code in postman?
+
+200 - OK
+201 - Created
+204 - No Content
+400 - Bad Request
+401 - Unauthorized
+403 - Forbidden
+404 - Not Found
+500 - Internal Server Error
+
+Q. Jenkins
+	Using 2 ways we can provide trigger the jenkins job
+		A. WebHooks
+		when a developer pushes code to github, webhook can auto trigger the JOB
+
+		B. SCM pooling
+
+	A.1 How to configure WebHOOK?
+		select the trigger option as webHook and open github repo> setting>webhook
+		and configure the URL( localhots URL wont work we can use ngrock to change the URL)
+
+Q	Jenkins trigger argument (*****)
+	MINUTE 		HOUR 		DOM    	MONTH 		DOW
+	0-59		0-23		1-31	1-12		0-7
