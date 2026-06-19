@@ -235,7 +235,6 @@ Q. Jenkins
 	A.1 How to configure WebHOOK?
 		select the trigger option as webHook and open github repo> setting>webhook
 		and configure the URL( localhots URL wont work we can use ngrock to change the URL)
-
 Q	Jenkins trigger argument (*****)
 	MINUTE 		HOUR 		DOM    	MONTH 		DOW
 	0-59		0-23		1-31	1-12		0-7
