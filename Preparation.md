@@ -5,7 +5,6 @@ API call completion	                waitForResponse()
 File download	                    waitForEvent('download')
 Popup window	                    waitForEvent('popup')
 
-
 Q.headless: true,
     true- browser will run in background
     false-  browser will visible
