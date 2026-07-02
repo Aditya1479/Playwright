@@ -1,6 +1,6 @@
 Q. waitforurl and different types of wait with real example in playwright?
 URL changes after action	        waitForURL()
-Traditional page navigation	        waitForLoadState('networkidle/domcontentloaded/load')
+Traditional page navigation=waitForLoadState('networkidle/domcontentloaded/load')
 API call completion	                waitForResponse()
 File download	                    waitForEvent('download')
 Popup window	                    waitForEvent('popup')
@@ -103,6 +103,7 @@ IMP	15.	toHaveURL()
 	18.	expect(response.status()).toBe(200);
 	19.	expect(responseBody.userName).toBe("Aditya");
 	20.	expect(responseBody.message).toContain("Success");
+	21. toHaveCss()	
 
 
 Q. how to handle new page in Playwright
@@ -234,6 +235,28 @@ Q. Jenkins
 	A.1 How to configure WebHOOK?
 		select the trigger option as webHook and open github repo> setting>webhook
 		and configure the URL( localhots URL wont work we can use ngrock to change the URL)
+		
 Q	Jenkins trigger argument (*****)
 	MINUTE 		HOUR 		DOM    	MONTH 		DOW
 	0-59		0-23		1-31	1-12		0-7
+
+Q	difference between const test= require('@playwright/test'); 
+	import {test} from ('@playwright/test')
+
+	const test= require('@playwright/test');
+	is commmon js destructuring commonly use in node.js
+
+	import { test } from ('@playwright/test')
+	this is ES module commonly use in tyepscript and javascript
+
+Q.	how to you execute the specific cases only in playwright.
+	by using tagging
+	test('@smoke login Tets', async ()=> {
+
+	})
+	npx playwright test --grep @smoke
+
+Q	How do you handled allure reports in Jenkins?
+	allure generate allure-results --clean
+	allure open
+	allure serve allure-results

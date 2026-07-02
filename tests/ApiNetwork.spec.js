@@ -11,7 +11,10 @@ const loginPayload = {
 }
 
 const orderPayLoad = {
-    orders: [{ country: "Cuba", productOrderedId: "6960eac0c941646b7a8b3e68" }]
+    orders: [{ 
+        country: "Cuba", 
+        productOrderedId: "6960eac0c941646b7a8b3e68"
+     }]
 }
 
 let response;

@@ -10,7 +10,7 @@ Q   Can Javascript objects hold a function as property?
             }
             person.greet();
             person.name
-            
+
 Q   how to write a simple function?
         function sayhello(){
             return "hello how are you?"
@@ -19,7 +19,7 @@ Q   how to write a simple function?
         console.log(storingFunction) 
         output= "hello how are you?"
 
-Q   what is anonymos function in javascript?
+Q   what is anonymous function in javascript?
     it does not have the function name.
         const greet = function(){
             return "Hello how are you"
@@ -34,9 +34,11 @@ Q   difference between var,const and let with an example?
             var x=1;
             if(true){
                 var x=2;
+                var x=4;
                 console.log(x) //2 JS override the global scopr x value
             }
-            console.log(x) //1
+            x=3 //updated global variable x value
+            console.log(x) //3
         }
 
     let: let is blocked scope and can be updated but not redeclared within same scope
@@ -45,6 +47,7 @@ Q   difference between var,const and let with an example?
             let x=1;
             if(true){
                 let x=2;
+                x=3
                 console.log(x) //2
             }
             console.log(x) //1
@@ -76,12 +79,13 @@ Q.  where are push,pop,slice,shift and unshift methods used when accessing array
         const firstPop= fruits.pop();
         console.log(firstPop)
           console.log(fruits)
-    shift(): add the element at the begginning on an array.
-        const shift =fruits.shift()
-          console.log(fruits)
-    unshift(): removes the element from begging of an array.
+    unshift(): Add the element from begging of an array.
         const unshfit= fruits.unshift("Mango")
           console.log(fruits)
+    shift(): remove the element at the begginning on an array.
+        const shift =fruits.shift()
+          console.log(fruits)
+    
     splice() :remove the element from specific index.
         const index= fruits.indexOf("Apple")
         const splice= fruits.splice(index,1)
@@ -182,6 +186,20 @@ Q classic programming question that involves using array methods (filter,reduce,
 
     console.log(totalScoreOfPassedStudent)
 
+Q   reverse String and palindrome string
+    function reverseString(str){
+        return str.split('').reverse().join('');
+    }
 
+    const output = reverseString("Aditya")
+    console.log(output)
+
+
+    function palindrome(str){
+        return str === str.split('').reverse().join('');
+    }
+
+    const output1 = palindrome("AbA")
+    console.log(output1)
 
 

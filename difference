@@ -169,6 +169,9 @@ If they ask:
 
 Say:
 
-Functions work well for small utilities, but for page objects I prefer classes because they keep locators and page actions together, improve code organization, support inheritance, and make the framework easier to maintain as it grows.
+Functions work well for small utilities, but for page objects I prefer
+ classes because they keep locators and page actions together, improve code 
+ organization, support inheritance, and make the framework easier to maintain 
+ as it grows.
 
 That's the answer that demonstrates framework design thinking rather than just coding knowledge.
