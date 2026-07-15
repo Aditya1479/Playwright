@@ -11,11 +11,11 @@ Q.headless: true,
 
 Q. frame and framelocator difference in playwright with real world example
 									Feature	Frame												FrameLocator
-What is it?							Actual iframe object										Locator for iframe
-How to get it?						page.frame()												page.frameLocator()
-Similar to							Page object													Locator object
-Auto-waiting						Less convenient												Full locator auto-waiting
-Recommended							When you need frame APIs									For most UI automation
+What is it?						Actual iframe object										Locator for iframe
+How to get it?					page.frame()												page.frameLocator()
+Similar to						Page object													Locator object
+Auto-waiting			Less convenient												Full locator auto-waiting
+Recommended					When you need frame APIs									For most UI automation
 Modern Playwright					Less used													Preferred
 
 Q. different techniques of parallel run in playwright and cross browser
@@ -57,7 +57,7 @@ This approach supports alert, confirm, prompt, and beforeunload dialogs.
 Q. How do you upload files in Playwright?
 		await page.locator('#fileInput').setInputFiles('sample.pdf');
 
-Q.   How do you download files in Playwright?
+Q. How do you download files in Playwright?
  const downloadPromise = page.waitForEvent('download');
 await page.click('Download');
 
@@ -77,7 +77,7 @@ Q. list of assertions
 	5.  toBeFalsy
 			expect(isErrorDisplayed).toBeFalsy();
 IMP	6.	toBeVisible = Most Commmonly used.
-			await expect(page.getByRole('button',{name:'Login'})).toBeVisib();
+			await expect(page.getByRole('button',{name:'Login'})).toBeVisible();
 	7. 	toBeHidden()
 			await expect(locator).toBeHidden();
 	8.	toBeEnabled()
@@ -240,7 +240,8 @@ Q	Jenkins trigger argument (*****)
 	MINUTE 		HOUR 		DOM    	MONTH 		DOW
 	0-59		0-23		1-31	1-12		0-7
 
-Q	difference between const test= require('@playwright/test'); 
+Q	difference between 
+    const test= require('@playwright/test'); 
 	import {test} from ('@playwright/test')
 
 	const test= require('@playwright/test');
@@ -260,3 +261,18 @@ Q	How do you handled allure reports in Jenkins?
 	allure generate allure-results --clean
 	allure open
 	allure serve allure-results
+
+Q. Playwright locator Priority
+getByRole()
+↓
+getByLabel()
+↓
+getByPlaceholder()
+↓
+getByText()
+↓
+getByTestId()
+↓
+CSS
+↓
+XPath (Last option)

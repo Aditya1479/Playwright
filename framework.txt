@@ -1,0 +1,47 @@
+One of my key achievements was designing and developing two automation frameworks from scratch using JavaScript.
+
+The first framework follows a class-based Page Object Model architecture, while the second framework is built using pure JavaScript modules with function-based imports and exports. Let me explain the class-based framework, as it is the primary framework currently used in my project.
+
+The framework follows a Hybrid Automation Framework approach by combining Page Object Model (POM) and Data-Driven Testing (DDT).
+
+Each application page has its own dedicated Page Object class. These classes encapsulate all locators and page-specific actions, which improves maintainability and separation of concerns. All locators are initialized inside the constructor, ensuring they are created once when the page object is instantiated and can be reused across methods.
+
+To promote code reusability and inheritance, all page classes extend a BasePage class using the `extends` keyword. The BasePage is initialized using the `super()` call and contains common functionality shared across the framework such as:
+
+* Navigation methods (goto)
+* Wait utilities (waitForPageLoad, waitForElement)
+* Scrolling utilities (scrollToElement)
+* Common browser interaction methods
+
+This approach minimizes code duplication and ensures consistency across all page objects.
+
+To manage page object creation efficiently, I implemented a Page Manager layer. Instead of creating individual page object instances inside every test, the Page Manager acts as a centralized factory that initializes and returns page objects through methods such as:
+
+* getLoginPage()
+* getDashboardPage()
+* getOrdersPage()
+
+This keeps test scripts clean and makes page object management easier.
+
+there is an API layer By using APIs for test data setup, we significantly reduced execution time because creating data through the backend is much faster and more reliable than navigating multiple UI screens.
+
+For test data management, I used JSON files to maintain environment-independent test data. In addition, I integrated the XLSX library to support reading and writing Excel files, allowing the framework to handle multiple sheets and complex data-driven scenarios.
+
+To optimize execution time and avoid repetitive authentication steps, I implemented a Global Setup configuration. During execution, the framework authenticates once and stores the session using Playwright's storageState(). The generated authentication state is then reused across multiple test suites, significantly reducing execution time.
+
+One of the most important components of the framework is the Fixture layer. I implemented custom Playwright fixtures that act as dependency injection containers. These fixtures lazily initialize page objects, utility classes, and helper components only when required. As a result, tests can directly consume page objects without manual instantiation, leading to cleaner and more maintainable test scripts.
+
+To further improve reusability, I created dedicated utility layers including:
+
+* Common Assertions
+* Common Tasks
+* Common Methods
+* Utility Helpers
+
+These reusable components are shared across all test suites, reducing duplication and standardizing implementation patterns.
+
+For reporting, I integrated Allure Reporting to provide detailed execution insights, including test steps, screenshots, logs, and failure analysis. This significantly reduced debugging and defect triage effort.
+
+For CI/CD integration, I configured Jenkins pipelines that automatically trigger executions based on schedules or code commits. The pipeline performs source checkout, dependency installation, test execution, report generation, and report publishing. This enables continuous testing and faster feedback for the team.
+
+Overall, the framework was designed with scalability, maintainability, reusability, and execution efficiency in mind, allowing the team to support UI automation, API validation, data-driven testing, reporting, and continuous integration from a single automation platform.

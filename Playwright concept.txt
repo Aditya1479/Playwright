@@ -32,7 +32,7 @@ npx playwright codegen => Playwright codegen (mostly used in standAlone scripts)
     await page.pause() //opens the playwright console for debugging and pause the scripts
     page.locator('#terms').uncheck() //uncheck the locator
     const page2=context.waitForEvent('page') //Handled the new window
-    await page.locator("#username").inputValue()); //provides input value which is dynamically provided
+    await page.locator("#username").inputValue(); //provides input value which is dynamically provided
     page.locator("h3:has-text=('ZARA COAT 3')").isVisible() //Returns whether the element is visible.
     page.locator("[placeholder='Select Country']").pressSequentially("ind") //enters the input sequentially means not copy pasting actual writing
     page.getByLabel("Employed").click() //mostly used and stable for checkbox and radio button.
