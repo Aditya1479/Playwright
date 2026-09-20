@@ -1,6 +1,6 @@
 Q. waitforurl and different types of wait with real example in playwright?
 URL changes after action	        waitForURL()
-Traditional page navigation=waitForLoadState('networkidle/domcontentloaded/load')
+Traditional page navigation         waitForLoadState('networkidle/domcontentloaded/load')
 API call completion	                waitForResponse()
 File download	                    waitForEvent('download')
 Popup window	                    waitForEvent('popup')
@@ -19,7 +19,7 @@ Recommended					When you need frame APIs									For most UI automation
 Modern Playwright					Less used													Preferred
 
 Q. different techniques of parallel run in playwright and cross browser
-		1. Playwright runs test files in parallel using worker processes playwright.config.js.
+		1.Playwright runs test files in parallel using worker processes playwright.config.js.
 		2.Parallel Within a Single Describe Block all test, all test present in single file will run parallely
 			e.g test.describe.configure({
 				mode: 'parallel'
@@ -66,7 +66,7 @@ const download =await downloadPromise;
 await download.saveAs('file.pdf');
 
 Q. list of assertions
-	1. toBe()= exact match
+	1.  toBe()= exact match
 			expect(statusCode).toBe(200);
 	2.	toEqual()= Object/Array Comparison
 			expect(userDetails).toEqual(expectedUserDetails);
@@ -138,7 +138,7 @@ Q. how to you handle excel files.
 	import * as XLSX from 'xlsx'
 	const workbook= XLSX.readFile('filePath')
 	const sheet =	workbook.Sheets[sheetName/sheetIndex]
-	const data	=XLSX.utils.sheet_to_json(sheet);
+	const data	=   XLSX.utils.sheet_to_json(sheet);
 	console.log(data)
 
 Q. How do you handle json file
@@ -192,7 +192,7 @@ Q. How do you share data across your tests?
     e.g 2
         test.describe.each(dataset)
 
-Q	how do you handle table elemenst in playwright.
+Q	how do you handle table elements in playwright.
 	e.g
 	Employee	Role	Status		Action
 	Aditya	QA			Active		Edit

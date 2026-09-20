@@ -70,3 +70,13 @@ report generation, and report publishing. This enables continuous testing and fa
 Overall, the framework was designed with scalability, maintainability, reusability, and execution efficiency
  in mind, allowing the team to support UI automation, API validation, data-driven testing, reporting, and 
  continuous integration from a single automation platform.
+
+
+
+// 1
+// 12
+// 123
+// 1234
+ 
+// ip : java test
+// op: AvaJ TseT
